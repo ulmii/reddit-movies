@@ -1,7 +1,7 @@
 import expressLoader from './express';
 import mongooseLoader from './mongoose';
 import jobsLoader from './jobs';
-import Logger from './logger';
+import Logger from './factories/logger';
 import * as express from 'express';
 import dependencyInjectorLoader from './dependencyInjector';
 

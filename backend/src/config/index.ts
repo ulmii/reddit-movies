@@ -36,6 +36,9 @@ export default {
     password: process.env.PASSWORD,
     clientId: process.env.CLIENT_ID,
     secret: process.env.REDDIT_SECRET,
+    movies: {
+      query: process.env.REDDIT_MOVIE_QUERY,
+    },
   },
 
   api: {
