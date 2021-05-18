@@ -5,6 +5,7 @@ import * as cors from 'cors';
 import routes from '../api';
 import config from '../config';
 import HttpException from '../api/exceptions/HttpException';
+import * as morgan from 'morgan';
 
 export default ({app}: {app: express.Application}) => {
   /**
@@ -26,6 +27,11 @@ export default ({app}: {app: express.Application}) => {
   // Enable Cross Origin Resource Sharing to all origins by default
   app.use(cors());
 
+  // Request logging
+  app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms')
+  );
+
   // Middleware that transforms the raw string of req.body into json
   app.use(bodyParser.json());
 
@@ -34,17 +40,18 @@ export default ({app}: {app: express.Application}) => {
 
   /// catch 404 and forward to error handler
   app.use((req, res, next) => {
-    const err = new HttpException( 404, 'Not Found');
+    const err = new HttpException(404, 'Not Found');
     next(err);
   });
 
-
-  app.use((err: HttpException, req: Request, res: Response, next: NextFunction) => {
-    res.status(err.status || 500);
-    res.json({
-      errors: {
-        message: err.message,
-      },
-    });
-  });
+  app.use(
+    (err: HttpException, req: Request, res: Response, next: NextFunction) => {
+      res.status(err.status || 500);
+      res.json({
+        errors: {
+          message: err.message,
+        },
+      });
+    }
+  );
 };

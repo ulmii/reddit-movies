@@ -1,9 +1,12 @@
 import expressLoader from './express';
+import mongooseLoader from './mongoose';
+import jobsLoader from './jobs';
 import Logger from './logger';
 import * as express from 'express';
+import agendaFactory from './agenda';
 
 export default async ({expressApp}: {expressApp: express.Application}) => {
-  // const mongoConnection = await mongooseLoader();
+  const mongoConnection = await mongooseLoader();
   Logger.info('✌️ DB loaded and connected!');
 
   /**
@@ -13,7 +16,6 @@ export default async ({expressApp}: {expressApp: express.Application}) => {
    * I know this is controversial but will provide a lot of flexibility at the time
    * of writing unit tests, just go and check how beautiful they are!
    */
-
 
   // const userModel = {
   //   name: 'userModel',
@@ -32,9 +34,10 @@ export default async ({expressApp}: {expressApp: express.Application}) => {
   // });
   Logger.info('✌️ Dependency Injector loaded');
 
-  // await jobsLoader({ agenda });
+  const agenda = agendaFactory({ mongoConnection });
+  jobsLoader({agenda});
   Logger.info('✌️ Jobs loaded');
 
-  await expressLoader({ app: expressApp });
+  expressLoader({app: expressApp});
   Logger.info('✌️ Express loaded');
 };
