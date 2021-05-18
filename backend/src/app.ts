@@ -1,14 +1,10 @@
-import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
+import config from './config';
+import Logger from './loaders/logger';
 
 // const db = require('./db')
 // const movieRouter = require('./routes/movie-router')
-
-import * as compression from 'compression';
 import * as express from 'express';
-const app = express();
 
-const apiPort = 3000;
 
 // app.use(bodyParser.urlencoded({ extended: true }))
 // app.use(cors())
@@ -22,6 +18,21 @@ const apiPort = 3000;
 //
 // app.use('/api', movieRouter)
 
-app.listen(apiPort, () => console.log(`Server running on port ${apiPort}`));
+
+async function startServer() {
+  const app = express();
+
+  await require('./loaders').default({ expressApp: app });
+
+  app
+    .listen(config.port, () =>
+      console.log(`Server running on port ${config.port}`),
+    )
+    .on('error', err => {
+      Logger.error(err);
+      throw err;
+    });
+}
 
 
+startServer();
