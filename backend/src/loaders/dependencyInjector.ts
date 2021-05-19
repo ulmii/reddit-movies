@@ -5,13 +5,17 @@ import {Db} from 'mongodb';
 import * as Agenda from 'agenda';
 import redditFactory from './factories/reddit';
 import RedditService from '../services/reddit';
+import movieFactory from './factories/movies';
+import MoviesService from '../services/movies';
+import {Models} from '../types';
+import RedditPostModel = Models.RedditPostModel;
 
 export default ({
   mongoConnection,
   models,
 }: {
   mongoConnection: Db;
-  models: {name: string; model: any}[];
+  models: {name: string; model: RedditPostModel}[];
 }) => {
   try {
     models.forEach(m => {
@@ -27,6 +31,10 @@ export default ({
     const redditService: RedditService = redditFactory();
     Container.set('redditService', redditService);
     LoggerInstance.info('RedditService injected into container');
+
+    const moviesService: MoviesService = movieFactory();
+    Container.set('moviesService', moviesService);
+    LoggerInstance.info('MoviesService injected into container');
 
     return {agenda: agendaInstance};
   } catch (e) {

@@ -69,7 +69,7 @@ export default class RedditService {
         });
 
       after = movie.name;
-      isBaseLoaded = result ? isBaseLoaded : false;
+      isBaseLoaded = result;
     }
     return {isBaseLoaded, after};
   }
