@@ -47,6 +47,26 @@ export default class RedditService {
     const s = await this.getToken();
   }
 
+  public async initMoviesToDb(after: string) {
+    let dbLoaded = false;
+    let afterTmp = after;
+    while (!dbLoaded) {
+      this.logger.info(`Loading movies after id: ${afterTmp}`);
+      const movies: Array<{
+        title: string;
+        name: string;
+        created: Date;
+      }> = await this.getMovies(100, afterTmp);
+
+      const newVar: {
+        isBaseLoaded: boolean;
+        after: string;
+      } = await this.loadMovies(movies);
+      dbLoaded = newVar.isBaseLoaded;
+      afterTmp = newVar.after;
+    }
+  }
+
   public async loadMovies(
     movies: Array<{title: string; name: string; created: Date}>
   ) {
@@ -72,26 +92,6 @@ export default class RedditService {
       isBaseLoaded = result;
     }
     return {isBaseLoaded, after};
-  }
-
-  public async initMoviesToDb(after: string) {
-    let dbLoaded = false;
-    let afterTmp = after;
-    while (!dbLoaded) {
-      this.logger.info(`Loading movies after id: ${afterTmp}`);
-      const movies: Array<{
-        title: string;
-        name: string;
-        created: Date;
-      }> = await this.getMovies(100, afterTmp);
-
-      const newVar: {
-        isBaseLoaded: boolean;
-        after: string;
-      } = await this.loadMovies(movies);
-      dbLoaded = newVar.isBaseLoaded;
-      afterTmp = newVar.after;
-    }
   }
 
   public async getToken() {

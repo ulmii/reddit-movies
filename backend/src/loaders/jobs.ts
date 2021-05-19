@@ -14,8 +14,7 @@ export default ({agenda}: {agenda: Agenda}) => {
   agenda.on('ready', () => {
     agenda
       .every('3400 seconds', 'generate-token')
-      .then(() => agenda.every('60 seconds', 'load-movies'));
-
-    agenda.start();
+      .then(() => agenda.every('60 seconds', 'load-movies'))
+      .then(() => agenda.start());
   });
 };
