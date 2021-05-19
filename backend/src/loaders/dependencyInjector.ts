@@ -6,8 +6,18 @@ import * as Agenda from 'agenda';
 import redditFactory from './factories/reddit';
 import RedditService from '../services/reddit';
 
-export default ({mongoConnection}: {mongoConnection: Db}) => {
+export default ({
+  mongoConnection,
+  models,
+}: {
+  mongoConnection: Db;
+  models: {name: string; model: any}[];
+}) => {
   try {
+    models.forEach(m => {
+      Container.set(m.name, m.model);
+    });
+
     Container.set('logger', LoggerInstance);
 
     const agendaInstance: Agenda = agendaFactory({mongoConnection});

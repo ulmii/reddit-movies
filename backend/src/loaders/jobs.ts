@@ -1,9 +1,10 @@
-import MovieJob from '../jobs/loadMovies';
 import TokenGeneratorJob from '../jobs/generateToken';
 import * as Agenda from 'agenda';
+import MovieJob from '../jobs/loadMovies';
 
 export default ({agenda}: {agenda: Agenda}) => {
-  agenda.define('load-movies', {concurrency: 10}, new MovieJob().handler);
+  const movieJob = new MovieJob();
+  agenda.define('load-movies', {concurrency: 10}, movieJob.handler);
   agenda.define(
     'generate-token',
     {priority: 'high', concurrency: 10},

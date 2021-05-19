@@ -10,8 +10,22 @@ export default class MovieJob {
 
     try {
       Logger.debug('Retrieving movie list');
-      //FIXME: Placeholder
-      redditInstance.getMovies();
+
+      const movies: Array<{
+        title: string;
+        name: string;
+        created: Date;
+      }> = await redditInstance.getMovies();
+
+      const result: {
+        isBaseLoaded: boolean;
+        after: string;
+      } = await redditInstance.loadMovies(movies);
+
+      if (!result.isBaseLoaded) {
+        Logger.info('Initializing movie base');
+        await redditInstance.initMoviesToDb(result.after);
+      }
 
       done();
     } catch (e) {

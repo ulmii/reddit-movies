@@ -9,14 +9,20 @@ export default async ({expressApp}: {expressApp: express.Application}) => {
   const mongoConnection = await mongooseLoader();
   Logger.info('DB loaded and connected!');
 
+  const redditPostModel = {
+    name: 'redditPostModel',
+    model: require('../models/redditPost').default,
+  };
+
   const {agenda} = await dependencyInjectorLoader({
     mongoConnection,
+    models: [redditPostModel],
   });
   Logger.info('Dependency Injector loaded');
 
-  jobsLoader({agenda});
-  Logger.info('Jobs loaded');
-
   expressLoader({app: expressApp});
   Logger.info('Express loaded');
+
+  jobsLoader({agenda});
+  Logger.info('Jobs loaded');
 };
