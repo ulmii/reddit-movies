@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {Container} from '@material-ui/core';
 import {DashboardContextProvider} from './contexts/DashboardContext';
 import {Dashboard} from './components/Dashboard';

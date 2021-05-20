@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import * as React from 'react';
+import {useEffect, useState} from 'react';
 import {IDashboardContextState, IMovie} from '../interface';
 import {fetchMovies} from '../api/movies';
 
