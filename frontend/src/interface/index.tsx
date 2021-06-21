@@ -1,5 +1,3 @@
-type Dispatch<A> = (value: A) => void;
-
 export interface IMovie {
   _id: string;
   name: string;
@@ -10,4 +8,5 @@ export interface IMovie {
 
 export type IDashboardContextState = {
   movies: IMovie[];
+  loadNext: () => void;
 };

@@ -15,6 +15,7 @@ export default (app: Router) => {
       [Segments.QUERY]: {
         limit: Joi.number(),
         offset: Joi.number(),
+        after: Joi.string()
       },
     }),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -28,9 +29,12 @@ export default (app: Router) => {
         const offset: number | undefined = req.query.offset
           ? parseInt(<string>req.query.offset)
           : undefined;
+        const after: string | undefined = req.query.after
+            ? <string>req.query.after
+            : undefined;
 
         const moviesService: MoviesService = Container.get('moviesService');
-        const movies = await moviesService.getMovies(limit, offset);
+        const movies = await moviesService.getMovies(limit, offset, after);
 
         return res.json(movies).status(200);
       } catch (e) {

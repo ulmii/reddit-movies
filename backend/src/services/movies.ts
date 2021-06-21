@@ -13,7 +13,17 @@ export default class MoviesService {
     this.redditPostModel = Container.get('redditPostModel');
   }
 
-  public async getMovies(limit = 5, offset = 0): Promise<IRedditPost[]> {
+  public async getMovies(limit = 15, offset = 0, after?:string): Promise<IRedditPost[]> {
+    if(after) {
+      return this.redditPostModel
+          .find({'name':{$lt:after}})
+          .sort('-created')
+          .limit(limit)
+          .then(r => {
+            return r;
+          });
+    }
+
     return this.redditPostModel
       .find()
       .sort('-created')
