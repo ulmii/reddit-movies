@@ -42,7 +42,6 @@ function isBottom(ref: React.RefObject<HTMLDivElement>) {
 export default function Dashboard() {
   const classes = useStyles();
   const [initialLoad, setInitialLoad] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const {movies, throttledLoad} = useContext(DashboardContext);
   const contentRef = useRef<HTMLDivElement>(null);
   const hasMoreData = movies.length < 1000;
@@ -58,13 +57,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     const onScroll = () => {
-      if (!isLoading && hasMoreData && isBottom(contentRef)) {
+      if (hasMoreData && isBottom(contentRef)) {
         onBottomHit();
       }
     };
     document.addEventListener('scroll', onScroll);
     return () => document.removeEventListener('scroll', onScroll);
-  }, [onBottomHit, isLoading, hasMoreData]);
+  }, [onBottomHit, hasMoreData]);
 
   return (
     <React.Fragment>
@@ -75,23 +74,19 @@ export default function Dashboard() {
             {movies.map(movie => (
               <Grid item key={movie._id} xs={12}>
                 <Card className={classes.card}>
-                  {/*<CardMedia*/}
-                  {/*  className={classes.cardMedia}*/}
-                  {/*  image={product.imageUrl}*/}
-                  {/*  title={movie.title}*/}
-                  {/*/>*/}
                   <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
                       {movie.title}
                     </Typography>
-                    <Typography>description</Typography>
+                    <Typography>
+                      {new Date(movie.created).toLocaleDateString()}
+                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Container>
-        <button onClick={throttledLoad}>load next</button>
       </main>
     </React.Fragment>
   );
