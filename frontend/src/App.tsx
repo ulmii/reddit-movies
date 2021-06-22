@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Container} from '@material-ui/core';
 import {DashboardContextProvider} from './contexts/DashboardContext';
-import {Dashboard} from './components/Dashboard';
+import Dashboard from './components/Dashboard';
 
 function App() {
   return (

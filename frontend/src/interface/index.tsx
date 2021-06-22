@@ -8,5 +8,5 @@ export interface IMovie {
 
 export type IDashboardContextState = {
   movies: IMovie[];
-  loadNext: () => void;
+  throttledLoad: () => void;
 };
