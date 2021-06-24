@@ -5,6 +5,7 @@ import {stringify} from 'querystring';
 import config from '../config';
 import {Models} from '../types';
 import RedditPostModel = Models.RedditPostModel;
+import {IRedditPost} from "../interfaces/IRedditPost";
 
 export default class RedditService {
     public static url = 'https://oauth.reddit.com/r/movies/search';
@@ -32,10 +33,13 @@ export default class RedditService {
             })
             .then(res =>
                 res.data.data.children.flatMap(
-                    (post: { data: { title: string; name: string; created: number } }) => {
+                    (post: { data: { title: string; name: string; selftext: string, created: number } }) => {
+                        let match = /\**\**VOD:\**\**\s*([^\n\r]*)/gm.exec(post.data.selftext);
+
                         return {
                             name: post.data.name,
-                            title: post.data.title,
+                            title: post.data.title.replace(/(Official\s*Discussion\s*-\s*|\s*\[SPOILERS]\s*|\s*\[Spoilers]\s*)/gi, ''),
+                            vod: match ? match[1] : '',
                             created: new Date(post.data.created * 1000),
                         };
                     }
@@ -48,22 +52,12 @@ export default class RedditService {
         let afterTmp = after;
         while (!dbLoaded) {
             this.logger.info(`Loading movies after id: ${afterTmp}`);
-            const movies: Array<{
-                title: string;
-                name: string;
-                created: Date;
-            }> = await this.getMovies(100, afterTmp);
-
-            const modifiedMovies = movies.map(movie => ({
-                name: movie.name,
-                title: movie.title.replace(/(Official\s*Discussion\s*-\s*|\s*\[SPOILERS]\s*|\s*\[Spoilers]\s*)/gi, ''),
-                created: movie.created
-            }))
+            const movies: Array<IRedditPost> = await this.getMovies(100, afterTmp);
 
             const newVar: {
                 isBaseLoaded: boolean;
                 after: string;
-            } = await this.loadMovies(modifiedMovies);
+            } = await this.loadMovies(movies);
             dbLoaded = newVar.isBaseLoaded;
             afterTmp = newVar.after;
         }
@@ -80,11 +74,7 @@ export default class RedditService {
                 .exists({name: movie.name})
                 .then(exists => {
                     if (!exists) {
-                        this.redditPostModel.create({
-                            name: movie.name,
-                            title: movie.title.replace(/(Official\s*Discussion\s*-\s*|\s*\[SPOILERS]\s*|\s*\[Spoilers]\s*)/gi, ''),
-                            created: movie.created
-                        });
+                        this.redditPostModel.create(movie);
                     }
 
                     return exists;

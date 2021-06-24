@@ -3,6 +3,7 @@ import {useContext, useEffect, useRef, useState} from 'react';
 import DashboardContext from '../contexts/DashboardContext';
 import {
   Card,
+  CardActions,
   CardContent,
   Container,
   CssBaseline,
@@ -78,9 +79,10 @@ export default function Dashboard() {
                     <Typography gutterBottom variant="h5" component="h2">
                       {movie.title}
                     </Typography>
-                    <Typography>
+                    <Typography>Platforms: {movie.vod}</Typography>
+                    <CardActions>
                       {new Date(movie.created).toLocaleDateString()}
-                    </Typography>
+                    </CardActions>
                   </CardContent>
                 </Card>
               </Grid>

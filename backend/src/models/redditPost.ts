@@ -12,6 +12,11 @@ const RedditPost = new mongoose.Schema({
     required: true,
     index: false,
   },
+  vod: {
+    type: String,
+    required: false,
+    index: false
+  },
   created: {
     type: Date,
     required: true,

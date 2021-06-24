@@ -2,6 +2,7 @@ import {Container} from 'typedi';
 import {Logger} from 'winston';
 import {Job} from 'agenda';
 import RedditService from '../services/reddit';
+import {IRedditPost} from "../interfaces/IRedditPost";
 
 export default class MovieJob {
   public async handler(job: Job, done: (err?: Error) => void): Promise<void> {
@@ -11,11 +12,7 @@ export default class MovieJob {
     try {
       Logger.debug('Retrieving movie list');
 
-      const movies: Array<{
-        title: string;
-        name: string;
-        created: Date;
-      }> = await redditInstance.getMovies();
+      const movies: Array<IRedditPost> = await redditInstance.getMovies();
 
       const result: {
         isBaseLoaded: boolean;
